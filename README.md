@@ -1,6 +1,6 @@
 # Website Bán Đồ Nội Thất
 <h2>Setup Project:</h2>
-<h4>Step 1</h4><br />
+<h4>Step 1:</h4><br />
 <ul>
   <li>Open MSSQL SERVER</li>
   <li>Create database name: WebsiteNoiThat</li>
