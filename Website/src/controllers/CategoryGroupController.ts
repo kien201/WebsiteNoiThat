@@ -21,7 +21,7 @@ class CategoryGroupController {
             const errors = validationResult(req)
             res.locals.errors = errors.array()
 
-            if (req.method === 'POST' && res.locals.errors.length === 0) {
+            if (req.method === 'POST' && errors.isEmpty()) {
                 const group = CategoryGroupRepository.create({
                     name: req.body.name,
                     img: req.file?.filename || '',
@@ -43,7 +43,7 @@ class CategoryGroupController {
 
             const group = await CategoryGroupRepository.findOneBy({ id: parseInt(req.params.id) })
             if (group) {
-                if (req.method === 'POST' && res.locals.errors.length === 0) {
+                if (req.method === 'POST' && errors.isEmpty()) {
                     group.name = req.body.name
                     group.img = req.file?.filename || group.img
 

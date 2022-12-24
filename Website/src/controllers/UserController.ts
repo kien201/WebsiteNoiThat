@@ -25,7 +25,7 @@ class UserController {
             const errors = validationResult(req)
             res.locals.errors = errors.array()
 
-            if (req.method === 'POST') {
+            if (req.method === 'POST' && errors.isEmpty()) {
                 const exist = await UserRepository.exist({ where: { username: req.body.username } })
                 if (exist) {
                     res.locals.errors.push({ msg: 'Tài khoản đã tồn tại', param: 'username' })
@@ -52,7 +52,7 @@ class UserController {
 
             const user = await UserRepository.findOneBy({ id: parseInt(req.params.id) })
             if (user) {
-                if (req.method === 'POST' && res.locals.errors.length === 0) {
+                if (req.method === 'POST' && errors.isEmpty()) {
                     UserRepository.merge(user, req.body)
                     const rs = await UserRepository.save(user)
                     if (rs) res.locals.editSuccess = true
@@ -125,8 +125,9 @@ class UserController {
     // [GET | POST] /admin/login
     async AdminLogin(req: Request, res: Response, next: NextFunction) {
         try {
-            res.locals.errors = []
-            if (req.method === 'POST') {
+            const errors = validationResult(req)
+            res.locals.errors = errors.array()
+            if (req.method === 'POST' && errors.isEmpty()) {
                 const password = crypto.createHash('sha256').update(req.body.password).digest('base64')
                 const user = await UserRepository.findOneBy({
                     username: req.body.username,
@@ -149,8 +150,9 @@ class UserController {
     // [GET | POST] /profile/login
     async CustomerLogin(req: Request, res: Response, next: NextFunction) {
         try {
-            res.locals.loginErrors = []
-            if (req.method === 'POST') {
+            const errors = validationResult(req)
+            res.locals.loginErrors = errors.array()
+            if (req.method === 'POST' && errors.isEmpty()) {
                 const password = crypto.createHash('sha256').update(req.body.password).digest('base64')
                 const user = await UserRepository.findOneBy({
                     username: req.body.username,
@@ -170,20 +172,21 @@ class UserController {
         }
     }
 
-    // [GET | POST] /profile/register
+    // [POST] /profile/register
     async CustomerRegister(req: Request, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req)
             res.locals.registerErrors = errors.array()
+            if (errors.isEmpty()) {
+                const exist = await UserRepository.exist({ where: { username: req.body.username } })
+                if (exist) res.locals.registerErrors.push({ msg: 'Tài khoản đã tồn tại', param: 'username' })
 
-            const exist = await UserRepository.exist({ where: { username: req.body.username } })
-            if (exist) res.locals.registerErrors.push({ msg: 'Tài khoản đã tồn tại', param: 'username' })
-
-            if (res.locals.registerErrors.length === 0) {
-                const user = await UserRepository.create(req.body as Object)
-                user.password = crypto.createHash('sha256').update(user.password).digest('base64')
-                const rs = await UserRepository.save(user)
-                if (rs) res.locals.createSuccess = true
+                if (res.locals.registerErrors.length === 0) {
+                    const user = await UserRepository.create(req.body as Object)
+                    user.password = crypto.createHash('sha256').update(user.password).digest('base64')
+                    const rs = await UserRepository.save(user)
+                    if (rs) res.locals.createSuccess = true
+                }
             }
             return res.render('profile/login', { userGendersForDisplay })
         } catch (error) {

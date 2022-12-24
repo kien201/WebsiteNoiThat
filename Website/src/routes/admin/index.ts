@@ -3,6 +3,7 @@ import express from 'express'
 import UserController from '../../controllers/UserController'
 import OrderController from '../../controllers/OrderController'
 import { UserRoles } from '../../controllers/ConstData'
+import { validateLogin } from '../../middleware/validate'
 
 import userRouter from './user'
 import categoryGroupRouter from './categoryGroup'
@@ -13,7 +14,7 @@ import orderRouter from './order'
 const router = express.Router()
 
 router.get('/login', UserController.AdminLogin)
-router.post('/login', UserController.AdminLogin)
+router.post('/login', validateLogin, UserController.AdminLogin)
 
 router.use(UserController.CheckRole([UserRoles.Admin, UserRoles.Manager], '/admin/login'))
 

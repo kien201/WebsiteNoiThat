@@ -44,14 +44,17 @@
         <h1 class="mb-3">Cập nhật sản phẩm</h1>
         <form action="/admin/product/edit/<%=productInfo.id%>" method="post" enctype="multipart/form-data">
 
-            <% errors.forEach(err => { %>
-                <li class="text-danger mb-2"><%= err.msg %></li>
+            <% locals.errors && errors.forEach(err => { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= err.msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             <% }); %>
             
             <div class="row mb-3">
                 <label for="name" class="col-sm-2 col-form-label">Tên sản phẩm</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="name" id="name" value="<%=productInfo.name%>" required>
+                    <input type="text" class="form-control" name="name" id="name" value="<%=productInfo.name%>">
                 </div>
             </div>
 
@@ -112,21 +115,21 @@
             <div class="row mb-3">
                 <label for="price" class="col-sm-2 col-form-label">Giá (đ)</label>
                 <div class="col-sm-10">
-                    <input type="number" min="0" value="<%=productInfo.price%>" class="form-control" name="price" id="price" required>
+                    <input type="number" value="<%=productInfo.price%>" class="form-control" name="price" id="price">
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label for="discount" class="col-sm-2 col-form-label">Giảm giá (%)</label>
                 <div class="col-sm-10">
-                    <input type="number" min="0" max="100" value="<%=productInfo.discount%>" class="form-control" name="discount" id="discount" required>
+                    <input type="number" value="<%=productInfo.discount%>" class="form-control" name="discount" id="discount">
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label for="amount" class="col-sm-2 col-form-label">Số lượng tồn</label>
                 <div class="col-sm-10">
-                    <input type="number" min="0" value="<%=productInfo.amount%>" class="form-control" name="amount" id="amount" required>
+                    <input type="number" value="<%=productInfo.amount%>" class="form-control" name="amount" id="amount">
                 </div>
             </div>
 

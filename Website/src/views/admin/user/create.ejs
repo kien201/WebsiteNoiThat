@@ -3,46 +3,49 @@
         <h1 class="mb-3">Thêm người dùng</h1>
         <form action="/admin/user/create" method="post">
             
-            <% errors.forEach(err => { %>
-                <li class="text-danger mb-2"><%= err.msg %></li>
+            <% locals.errors && errors.forEach(err => { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= err.msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             <% }); %>
 
             <div class="row mb-3">
                 <label for="fullName" class="col-sm-2 col-form-label">Tên</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="fullName" id="fullName" required>
+                    <input type="text" class="form-control" name="fullName" id="fullName">
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label for="username" class="col-sm-2 col-form-label">Tài khoản</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="username" id="username" required>
+                    <input type="text" class="form-control" name="username" id="username">
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label for="password" class="col-sm-2 col-form-label">Mật khẩu</label>
                 <div class="col-sm-10">
-                    <input type="password" class="form-control" name="password" id="password" required>
+                    <input type="password" class="form-control" name="password" id="password">
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-10">
-                    <input type="email" class="form-control" name="email" id="email" required>
+                    <input type="email" class="form-control" name="email" id="email">
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="phoneNumber" class="col-sm-2 col-form-label">SĐT</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" required>
+                    <input type="text" class="form-control" name="phoneNumber" id="phoneNumber">
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="DoB" class="col-sm-2 col-form-label">Ngày sinh</label>
                 <div class="col-sm-10">
-                    <input type="date" class="form-control" name="DoB" id="DoB" required>
+                    <input type="date" class="form-control" name="DoB" id="DoB">
                 </div>
             </div>
             <fieldset class="row mb-3">

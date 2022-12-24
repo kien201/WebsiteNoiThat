@@ -23,7 +23,7 @@ class ProductController {
             const errors = validationResult(req)
             res.locals.errors = errors.array()
 
-            if (req.method === 'POST' && res.locals.errors.length === 0) {
+            if (req.method === 'POST' && errors.isEmpty()) {
                 const category = await CategoryRepository.findOneBy({ id: parseInt(req.body.categoryId) })
                 const product = new Product()
                 ProductRepository.merge(product, req.body, {
@@ -51,7 +51,7 @@ class ProductController {
                 where: { id: parseInt(req.params.id) },
             })
             if (product) {
-                if (req.method === 'POST' && res.locals.errors.length === 0) {
+                if (req.method === 'POST' && errors.isEmpty()) {
                     const category = await CategoryRepository.findOneBy({ id: req.body.categoryId })
                     ProductRepository.merge(product, req.body, {
                         img: req.file?.filename || product.img,

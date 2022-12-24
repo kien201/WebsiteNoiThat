@@ -16,17 +16,22 @@
                             <form action="/profile/login" method="post">
 
                                 <% locals.loginErrors && loginErrors.forEach(err => { %>
-                                    <li class="text-danger mb-2"><%= err.msg %></li>
+                                    <div class="alert alert-warning alert-dismissible fade show mb-1" role="alert">
+                                        <%= err.msg %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
                                 <% }); %>
 
                                 <div class="form-group">
                                     <label for="singin-email-2">Tài khoản *</label>
-                                    <input type="text" class="form-control" id="singin-email-2" name="username" required>
+                                    <input type="text" class="form-control" id="singin-email-2" name="username">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="singin-password-2">Mật khẩu *</label>
-                                    <input type="password" class="form-control" id="singin-password-2" name="password" required>
+                                    <input type="password" class="form-control" id="singin-password-2" name="password">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-footer">
@@ -46,37 +51,42 @@
                             <form action="/profile/register" method="post">
 
                                 <% locals.registerErrors && registerErrors.forEach(err => { %>
-                                    <li class="text-danger mb-2"><%= err.msg %></li>
+                                    <div class="alert alert-warning alert-dismissible fade show mb-1" role="alert">
+                                        <%= err.msg %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
                                 <% }); %>
 
                                 <div class="form-group">
                                     <label for="fullName">Tên *</label>
-                                    <input type="text" class="form-control" id="fullName" name="fullName" required>
+                                    <input type="text" class="form-control" id="fullName" name="fullName">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="username">Tài khoản *</label>
-                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <input type="text" class="form-control" id="username" name="username">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="password">Mật khẩu *</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <input type="password" class="form-control" id="password" name="password">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="email">Email *</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <input type="text" class="form-control" id="email" name="email">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="phoneNumber">Số điện thoại *</label>
-                                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="DoB">Ngày sinh *</label>
-                                    <input type="date" class="form-control" id="DoB" name="DoB" required>
+                                    <input type="date" class="form-control" id="DoB" name="DoB">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
@@ -95,7 +105,7 @@
 
                                 <div class="form-group">
                                     <label for="address">Địa chỉ *</label>
-                                    <input type="text" class="form-control" id="address" name="address" required>
+                                    <input type="text" class="form-control" id="address" name="address">
                                 </div><!-- End .form-group -->
 
                                 <div class="form-footer">

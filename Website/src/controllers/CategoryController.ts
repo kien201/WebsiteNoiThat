@@ -22,7 +22,7 @@ class CategoryController {
             const errors = validationResult(req)
             res.locals.errors = errors.array()
 
-            if (req.method === 'POST' && res.locals.errors.length === 0) {
+            if (req.method === 'POST' && errors.isEmpty()) {
                 const group = await CategoryGroupRepository.findOneBy({ id: parseInt(req.body.groupId) })
                 const cate = CategoryRepository.create({
                     name: req.body.name,
@@ -50,7 +50,7 @@ class CategoryController {
                 where: { id: parseInt(req.params.id) },
             })
             if (cate) {
-                if (req.method === 'POST' && res.locals.errors.length === 0) {
+                if (req.method === 'POST' && errors.isEmpty()) {
                     const group = await CategoryGroupRepository.findOneBy({
                         id: parseInt(req.body.groupId),
                     })
