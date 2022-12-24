@@ -178,7 +178,7 @@ class HomeController {
                 }
                 if (res.locals.errors.length === 0) {
                     AppDataSource.getRepository(User).merge(curUser, req.body)
-                    curUser.password = pass
+                    curUser.password = crypto.createHash('sha256').update(newPass).digest('base64')
                     const rs = await AppDataSource.getRepository(User).save(curUser)
                     if (rs) return res.render('partials/redirect', { msg: 'Cập nhật thông tin thành công', redirect: '/profile' })
                 }

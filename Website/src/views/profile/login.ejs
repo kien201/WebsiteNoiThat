@@ -17,7 +17,7 @@
 
                                 <% locals.loginErrors && loginErrors.forEach(err => { %>
                                     <div class="alert alert-warning alert-dismissible fade show mb-1" role="alert">
-                                        <%= err.msg %>
+                                        <span class="error-<%= err.param %>"><%= err.msg %></span>
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                           <span aria-hidden="true">&times;</span>
                                         </button>
@@ -52,7 +52,7 @@
 
                                 <% locals.registerErrors && registerErrors.forEach(err => { %>
                                     <div class="alert alert-warning alert-dismissible fade show mb-1" role="alert">
-                                        <%= err.msg %>
+                                        <span><%= err.msg %></span>
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                           <span aria-hidden="true">&times;</span>
                                         </button>

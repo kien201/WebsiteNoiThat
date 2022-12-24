@@ -166,7 +166,10 @@ const app = {
                         let totalPrice = 0
                         let html = `
                         <div class="col-lg-9">
-                            <table class="table table-cart table-mobile">
+                            ${
+                                data.cart.length === 0
+                                    ? 'Bạn chưa có sản phẩm nào trong giỏ hàng'
+                                    : `<table class="table table-cart table-mobile">
                                 <thead>
                                     <tr>
                                         <th>Sản phẩm</th>
@@ -216,7 +219,8 @@ const app = {
                                     })
                                     .join('')}
                                 </tbody>
-                            </table><!-- End .table table-wishlist -->
+                            </table><!-- End .table table-wishlist -->`
+                            }
                             <div class="cart-bottom">
                                 <button onclick="app.RenderCart()" class="btn btn-outline-dark-2"><span>Cập Nhật Giỏ Hàng</span><i class="icon-refresh"></i></button>
                             </div><!-- End .cart-bottom -->

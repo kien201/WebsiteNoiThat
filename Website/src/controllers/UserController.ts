@@ -24,7 +24,6 @@ class UserController {
         try {
             const errors = validationResult(req)
             res.locals.errors = errors.array()
-
             if (req.method === 'POST' && errors.isEmpty()) {
                 const exist = await UserRepository.exist({ where: { username: req.body.username } })
                 if (exist) {
