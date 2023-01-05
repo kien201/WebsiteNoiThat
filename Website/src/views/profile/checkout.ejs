@@ -70,11 +70,30 @@
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
-    
-                            <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-                                Đặt Mua
-                                <i class="icon-long-arrow-right"></i>
-                            </button>
+
+                            <h3 class="summary-title">Phương thức thanh toán</h3><!-- End .summary-title -->
+
+                            <div class="accordion-summary mb-0">
+                                <div class="card mb-2">
+                                    <div class="form-check">
+                                        <input type="radio" name="payMethod" id="payMethod1" value="PayAfter" checked>
+                                        <label class="form-check-label" for="payMethod1">Trả tiền mặt khi nhận hàng</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" name="payMethod" id="payMethod2" value="VnPay">
+                                        <label class="form-check-label" for="payMethod2">Thanh toán qua VnPay</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" name="payMethod" id="payMethod3" value="Paypal">
+                                        <label class="form-check-label" for="payMethod3">Thanh toán qua Paypal</label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                    Đặt Mua
+                                    <i class="icon-long-arrow-right"></i>
+                                </button>
+                            </div><!-- End .summary -->
                     </aside><!-- End .col-lg-3 -->
                 </div><!-- End .row -->
             </form>

@@ -3,6 +3,7 @@ import createError, { HttpError } from 'http-errors'
 import express, { Request, Response, NextFunction } from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
+import session from 'express-session'
 
 import homeRouter from './routes/home'
 import profileRouter from './routes/profile'
@@ -30,6 +31,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(session({ secret: process.env.SECRET_KEY || 'secret', cookie: { maxAge: 24 * 60 * 60 * 1000 }, resave: false, saveUninitialized: true }))
+declare module 'express-session' {
+    interface SessionData {
+        paymentBody: { [key: string]: any }
+    }
+}
 
 // authentication
 app.use(UserController.Authenticate)

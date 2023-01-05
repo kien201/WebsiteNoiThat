@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table text-center">
     <thead>
         <tr>
             <th>Mã đơn hàng</th>
@@ -13,7 +13,7 @@
     <tbody>
         <% orderList.forEach(item => { %>
             <tr>
-                <td><a class="p-5" href="/profile/order/<%=item.id%>">#<%=item.id%></a></td>
+                <td><a href="/profile/order/<%=item.id%>">#<%=item.id%></a></td>
                 <td><%=item.orderDate?.toLocaleString() || '?'%></td>
                 <td><%=item.deliveryDate?.toLocaleString() || '?'%></td>
                 <td><%=item.deliveryAddress || '?'%></td>

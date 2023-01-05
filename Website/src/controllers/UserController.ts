@@ -4,7 +4,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 import { In } from 'typeorm'
 import AppDataSource, { Cart, Order, OrderDetail, Product, User } from '../models'
-import { UserRoles, userRolesForDisplay, userGendersForDisplay, SECRET_KEY } from './ConstData'
+import { UserRoles, userRolesForDisplay, userGendersForDisplay } from './ConstData'
 
 const UserRepository = AppDataSource.getRepository(User)
 
@@ -134,7 +134,7 @@ class UserController {
                     role: In([UserRoles.Admin, UserRoles.Manager]),
                 })
                 if (user) {
-                    const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: '1d' })
+                    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY || 'secret', { expiresIn: '1d' })
                     const cookieExpires = req.body.rememberPass === 'on' ? new Date(Date.now() + 24 * 60 * 60 * 1000) : undefined
                     res.cookie('token', token, { expires: cookieExpires })
                     return res.redirect('/admin')
@@ -159,13 +159,13 @@ class UserController {
                     role: In([UserRoles.Admin, UserRoles.Manager, UserRoles.Customer]),
                 })
                 if (user) {
-                    const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: '1d' })
+                    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY || 'secret', { expiresIn: '1d' })
                     const cookieExpires = req.body.rememberPass === 'on' ? new Date(Date.now() + 24 * 60 * 60 * 1000) : undefined
                     res.cookie('token', token, { expires: cookieExpires })
                     return res.redirect('/')
                 } else res.locals.loginErrors.push({ msg: 'Thông tin tài khoản hoặc mật khẩu không chính xác!' })
             }
-            return res.render('profile/login', { userGendersForDisplay })
+            return res.render('profile/login', { userGendersForDisplay, page: 'login' })
         } catch (error) {
             next(error)
         }
@@ -187,7 +187,7 @@ class UserController {
                     if (rs) res.locals.createSuccess = true
                 }
             }
-            return res.render('profile/login', { userGendersForDisplay })
+            return res.render('profile/login', { userGendersForDisplay, page: 'register' })
         } catch (error) {
             next(error)
         }
@@ -196,7 +196,7 @@ class UserController {
     // use authenticate before routes
     async Authenticate(req: Request, res: Response, next: NextFunction) {
         try {
-            const token = jwt.verify(req.cookies.token, SECRET_KEY) as JwtPayload
+            const token = jwt.verify(req.cookies.token, process.env.SECRET_KEY || 'secret') as JwtPayload
             const curUser = await UserRepository.findOneBy({ id: token.id })
             if (curUser) res.locals.curUser = curUser
             next()
@@ -315,7 +315,6 @@ class UserController {
         try {
             if (!res.locals.curUser) return res.json({ err: 'Bạn chưa đăng nhập !' })
             const curUser = await UserRepository.findOne({
-                relations: { wishlist: true },
                 where: { id: Number(res.locals.curUser.id) },
             })
             const product = await AppDataSource.manager.findOneBy(Product, {
@@ -335,38 +334,22 @@ class UserController {
         }
     }
 
-    // [POST] /profile/checkout
-    async Checkout(req: Request, res: Response, next: NextFunction) {
+    async GetUserCartToPay(req: Request, res: Response, next: NextFunction) {
         try {
+            if (!res.locals.curUser) return res.json({ err: 'Bạn chưa đăng nhập !' })
             const curUser = await UserRepository.findOne({
                 relations: { cart: { product: true } },
                 where: { id: Number(res.locals.curUser.id) },
             })
-            if (curUser && curUser.cart.length > 0) {
-                const orderDetailObj = curUser.cart
+            res.locals.userCart =
+                curUser?.cart
                     .filter((item) => item.amount <= item.product.amount)
                     .map((item) => ({
-                        product: item.product,
+                        productName: item.product.name,
                         amount: item.amount,
-                        price: (item.product.price - (item.product.price * item.product.discount) / 100) * item.amount,
-                    }))
-                const orderDetail = AppDataSource.manager.create(OrderDetail, orderDetailObj)
-                await AppDataSource.manager.save(orderDetail)
-
-                const order = AppDataSource.manager.create(Order, {
-                    deliveryAddress: req.body.diffAddress || curUser.address,
-                    orderDate: new Date(),
-                    note: req.body.note,
-                    totalPrice: orderDetail.reduce((total, item) => total + item.price, 0),
-                    user: curUser,
-                    details: orderDetail,
-                })
-                await AppDataSource.manager.save(order)
-
-                curUser.cart = []
-                await AppDataSource.manager.save(curUser)
-                return res.render('partials/redirect', { msg: 'Đặt hàng thành công', redirect: '/profile' })
-            } else return res.redirect('/profile/cart')
+                        price: Math.ceil((item.product.price - (item.product.price * item.product.discount) / 100) * item.amount),
+                    })) || []
+            next()
         } catch (error) {
             next(error)
         }

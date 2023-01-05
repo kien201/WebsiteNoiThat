@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { Between, In, MoreThanOrEqual } from 'typeorm'
-import AppDataSource, { Order, Product } from '../models'
+import AppDataSource, { Order, Product, User, OrderDetail } from '../models'
 import { OrderStatus, orderStatusForDisplay } from './ConstData'
 
 const OrderRepository = AppDataSource.getRepository(Order)
@@ -180,6 +180,45 @@ class OrderController {
                 },
             })
             return res.render('admin/revenue', { orderList, fromDate, toDate })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    // [POST] /profile/checkout
+    async AddUserOrder(req: Request, res: Response, next: NextFunction) {
+        try {
+            const curUser = await AppDataSource.getRepository(User).findOne({
+                relations: { cart: { product: true } },
+                where: { id: Number(res.locals.curUser.id) },
+            })
+            if (curUser && curUser.cart.length > 0) {
+                const orderDetailObj = curUser.cart
+                    .filter((item) => item.amount <= item.product.amount)
+                    .map((item) => ({
+                        product: item.product,
+                        amount: item.amount,
+                        price: (item.product.price - (item.product.price * item.product.discount) / 100) * item.amount,
+                    }))
+                const orderDetail = AppDataSource.manager.create(OrderDetail, orderDetailObj)
+                await AppDataSource.manager.save(orderDetail)
+
+                const order = AppDataSource.manager.create(Order, {
+                    deliveryAddress: req.body.diffAddress || curUser.address,
+                    orderDate: new Date(),
+                    note: req.body.note || '',
+                    totalPrice: orderDetail.reduce((total, item) => total + item.price, 0),
+                    isPaid: req.body.isPaid || false,
+                    user: curUser,
+                    details: orderDetail,
+                    status: req.body.isPaid ? OrderStatus.Confirmed : OrderStatus.Unconfirmed,
+                })
+                await AppDataSource.manager.save(order)
+
+                curUser.cart = []
+                await AppDataSource.manager.save(curUser)
+                return res.render('partials/redirect', { msg: 'Đặt hàng thành công', redirect: '/profile' })
+            } else return res.redirect('/profile/cart')
         } catch (error) {
             next(error)
         }

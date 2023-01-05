@@ -1,6 +1,3 @@
-// key for token
-export const SECRET_KEY = 'supersecret'
-
 export enum UserRoles {
     Admin = 0,
     Manager = 1,

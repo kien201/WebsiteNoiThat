@@ -1,3 +1,7 @@
+<%
+    const loginActive = locals.page === 'login'
+    const registerActive = locals.page === 'register'
+%>
 <%- include('../layouts/homeHeader') -%>
     <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('/images/login-bg.jpg')">
         <div class="container">
@@ -5,14 +9,14 @@
                 <div class="form-tab">
                     <ul class="nav nav-pills nav-fill" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab" aria-controls="signin-2" aria-selected="true">Đăng Nhập</a>
+                            <a class="nav-link <%=loginActive ? 'active' : ''%>" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab" aria-controls="signin-2">Đăng Nhập</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="false">Đăng Ký</a>
+                        <li class="nav-item <%=registerActive ? 'active' : ''%>">
+                            <a class="nav-link" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2">Đăng Ký</a>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane fade show active" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
+                        <div class="tab-pane fade <%=loginActive ? 'show active' : ''%>" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
                             <form action="/profile/login" method="post">
 
                                 <% locals.loginErrors && loginErrors.forEach(err => { %>
@@ -47,7 +51,7 @@
                                 </div><!-- End .form-footer -->
                             </form>
                         </div><!-- .End .tab-pane -->
-                        <div class="tab-pane fade" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+                        <div class="tab-pane fade <%=registerActive ? 'show active' : ''%>" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
                             <form action="/profile/register" method="post">
 
                                 <% locals.registerErrors && registerErrors.forEach(err => { %>
