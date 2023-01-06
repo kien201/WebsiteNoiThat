@@ -4,7 +4,6 @@ import DateFormat from 'dateformat'
 import querystring from 'qs'
 import crypto from 'crypto'
 
-import { Cart } from '../models'
 import UserController from '../controllers/UserController'
 import HomeController from '../controllers/HomeController'
 import OrderController from '../controllers/OrderController'
@@ -43,7 +42,7 @@ router.post(
         try {
             switch (req.body.payMethod) {
                 case 'PayAfter':
-                    return res.send('PayAfter')
+                    return next()
                 case 'VnPay':
                     req.session.paymentBody = req.body
                     const date = new Date()
@@ -88,21 +87,21 @@ router.post(
                                     items: res.locals.userCart.map((item: any) => ({
                                         name: item.productName,
                                         sku: 'item',
-                                        price: item.price / 23605,
+                                        price: Math.ceil(item.price / 23605),
                                         currency: 'USD',
                                         quantity: item.amount,
                                     })),
                                 },
                                 amount: {
                                     currency: 'USD',
-                                    total: res.locals.userCart.reduce((total: any, item: any) => total + item.price / 23605, 0),
+                                    total: res.locals.userCart.reduce((total: any, item: any) => total + Math.ceil(item.price / 23605), 0),
                                 },
                                 description: 'Payment Date: ' + DateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss'),
                             },
                         ],
                     }
                     paypal.payment.create(create_payment_json, function (error, payment) {
-                        if (error) throw error
+                        if (error) next(error)
                         else {
                             for (const link of payment.links || []) {
                                 if (link.rel === 'approval_url') return res.redirect(link.href)
@@ -127,7 +126,7 @@ router.get(
             const paymentId = req.query.paymentId?.toString() || ''
             const payerId = req.query.PayerID?.toString() || ''
             paypal.payment.execute(paymentId, { payer_id: payerId }, function (error, payment) {
-                if (error) throw error
+                if (error) next(error)
                 else {
                     req.body = { ...req.session.paymentBody, isPaid: true }
                     return next()

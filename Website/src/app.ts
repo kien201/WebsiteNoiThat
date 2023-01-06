@@ -5,6 +5,7 @@ import path from 'path'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 
+dotenv.config()
 import homeRouter from './routes/home'
 import profileRouter from './routes/profile'
 import adminRouter from './routes/admin'
@@ -19,7 +20,6 @@ AppDataSource.initialize()
     .catch((err) => {
         console.error('Error during Data Source initialization:', err)
     })
-dotenv.config()
 const port = process.env.SERVER_PORT
 const app = express()
 
